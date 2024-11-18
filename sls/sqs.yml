@@ -11,7 +11,7 @@ Resources:
       Queues:
         - !Ref ProcessingQueue
       PolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
@@ -20,13 +20,11 @@ Resources:
             Resource: !GetAtt ProcessingQueue.Arn
             Condition:
               ArnEquals:
-                aws:SourceArn: 
-                  Fn::ImportValue: event-driven-data-processing-${self:provider.stage}-TopicArn
+                aws:SourceArn: !Ref ProcessingTopic
 
   QueueSubscription:
     Type: AWS::SNS::Subscription
     Properties:
       Protocol: sqs
-      TopicArn: 
-        Fn::ImportValue: event-driven-data-processing-${self:provider.stage}-TopicArn
+      TopicArn: !Ref ProcessingTopic
       Endpoint: !GetAtt ProcessingQueue.Arn

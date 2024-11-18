@@ -45,7 +45,19 @@ functions:
           batchSize: 10
 
 resources:
-  - ${file(sls/sns.yml)}
-  - ${file(sls/sqs.yml)}
-  - ${file(sls/eventbridge.yml)}
-  - ${file(sls/s3.yml)}
+  Resources:
+    # S3 Resources
+    InputBucket: ${file(sls/s3.yml):Resources.InputBucket}
+    OutputBucket: ${file(sls/s3.yml):Resources.OutputBucket}
+    
+    # SNS Resources
+    ProcessingTopic: ${file(sls/sns.yml):Resources.ProcessingTopic}
+    ProcessingTopicPolicy: ${file(sls/sns.yml):Resources.ProcessingTopicPolicy}
+    
+    # SQS Resources
+    ProcessingQueue: ${file(sls/sqs.yml):Resources.ProcessingQueue}
+    QueuePolicy: ${file(sls/sqs.yml):Resources.QueuePolicy}
+    QueueSubscription: ${file(sls/sqs.yml):Resources.QueueSubscription}
+    
+    # EventBridge Resources
+    S3EventRule: ${file(sls/eventbridge.yml):Resources.S3EventRule}
