@@ -3,9 +3,48 @@ Resources:
     Type: AWS::SNS::Topic
     Properties:
       TopicName: ${self:service}-${self:provider.stage}-topic
+      TracingConfig: Active
 
-Outputs:
-  ProcessingTopicArn:
-    Value: !Ref ProcessingTopic
-    Export:
-      Name: ${self:service}-${self:provider.stage}-TopicArn
+  ProcessingTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref ProcessingTopic
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sns:Publish
+            Resource: !Ref ProcessingTopic
+
+  SNSLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/sns/${self:service}-${self:provider.stage}-topic
+      RetentionInDays: 14
+
+  SNSLogRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: sns.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: SNSCloudWatchLogsPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:PutMetricFilter
+                  - logs:PutRetentionPolicy
+                Resource: !GetAtt SNSLogGroup.Arn

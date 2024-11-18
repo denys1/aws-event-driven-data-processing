@@ -19,7 +19,8 @@ Resources:
               - ${self:custom.inputBucket}
       State: ENABLED
       Targets:
-        - Arn: !Ref ProcessingTopic
+        - Arn: 
+            Fn::ImportValue: ${self:service}-${self:provider.stage}-TopicArn
           Id: "S3ToSNS"
 
   EventBridgeLogGroup:
