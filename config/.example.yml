@@ -1,0 +1,4 @@
+STAGE: <environment-name>  # dev, stg, prod
+REGION: <aws-region>  # e.g., us-east-1
+INPUT_BUCKET_NAME: <input-bucket-name>  # e.g., input-json-files-dev
+OUTPUT_BUCKET_NAME: <output-bucket-name>  # e.g., output-parquet-files-dev

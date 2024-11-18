@@ -1,0 +1,10 @@
+Resources:
+  InputBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.inputBucket}
+
+  OutputBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.outputBucket}

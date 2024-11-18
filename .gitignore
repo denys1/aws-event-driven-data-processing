@@ -1,0 +1,32 @@
+# Ignore stage-specific configs but keep the example
+config/*.yml
+!config/.example.yml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.env
+.venv
+env/
+venv/
+ENV/
+*.pyc
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Serverless
+.serverless/
+.requirements.zip
+node_modules/
+.env*
+
+# OS
+.DS_Store
+Thumbs.db

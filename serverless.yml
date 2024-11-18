@@ -1,0 +1,46 @@
+service: event-driven-data-processing
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: ${file(config/${opt:stage, 'dev'}.yml):REGION}
+  stage: ${file(config/${opt:stage, 'dev'}.yml):STAGE}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+          Resource: 
+            - arn:aws:s3:::${self:custom.inputBucket}/*
+            - arn:aws:s3:::${self:custom.outputBucket}/*
+        - Effect: Allow
+          Action:
+            - sqs:ReceiveMessage
+            - sqs:DeleteMessage
+            - sqs:GetQueueAttributes
+          Resource: !GetAtt ProcessingQueue.Arn
+
+custom:
+  inputBucket: ${file(config/${opt:stage, 'dev'}.yml):INPUT_BUCKET_NAME}
+  outputBucket: ${file(config/${opt:stage, 'dev'}.yml):OUTPUT_BUCKET_NAME}
+
+functions:
+  processJson:
+    handler: functions/process_json/handler.process
+    environment:
+      INPUT_BUCKET: ${self:custom.inputBucket}
+      OUTPUT_BUCKET: ${self:custom.outputBucket}
+      STAGE: ${file(config/${opt:stage, 'dev'}.yml):STAGE}
+      REGION: ${file(config/${opt:stage, 'dev'}.yml):REGION}
+    events:
+      - sqs:
+          arn: !GetAtt ProcessingQueue.Arn
+          batchSize: 10
+
+resources:
+  - ${file(sls/s3.yml)}
+  - ${file(sls/sns.yml)}
+  - ${file(sls/sqs.yml)}
+  - ${file(sls/eventbridge.yml)}

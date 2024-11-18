@@ -1,0 +1,5 @@
+Resources:
+  ProcessingTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: json-processing-topic
