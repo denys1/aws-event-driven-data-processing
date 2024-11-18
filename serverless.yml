@@ -26,6 +26,11 @@ custom:
   inputBucket: ${file(config/${opt:stage, 'dev'}.yml):INPUT_BUCKET_NAME}
   outputBucket: ${file(config/${opt:stage, 'dev'}.yml):OUTPUT_BUCKET_NAME}
 
+package:
+  patterns:
+    - '!./**'
+    - 'functions/process_json/handler.py'
+
 functions:
   processJson:
     handler: functions/process_json/handler.process
