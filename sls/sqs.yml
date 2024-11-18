@@ -21,3 +21,10 @@ Resources:
             Condition:
               ArnEquals:
                 aws:SourceArn: !Ref ProcessingTopic
+
+  QueueSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: sqs
+      TopicArn: !Ref ProcessingTopic
+      Endpoint: !GetAtt ProcessingQueue.Arn
