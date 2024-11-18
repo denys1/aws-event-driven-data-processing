@@ -1,12 +1,14 @@
 Resources:
-  S3EventRule:
+  EventRule:
     Type: AWS::Events::Rule
     Properties:
+      Name: ${self:service}-${self:provider.stage}-s3-rule
+      Description: "Rule to capture S3 events"
       EventPattern:
         source:
           - aws.s3
         detail-type:
-          - AWS API Call via CloudTrail
+          - "AWS API Call via CloudTrail"
         detail:
           eventSource:
             - s3.amazonaws.com
@@ -18,4 +20,10 @@ Resources:
       State: ENABLED
       Targets:
         - Arn: !Ref ProcessingTopic
-          Id: ProcessingTopicTarget
+          Id: "S3ToSNS"
+
+  EventBridgeLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/events/${self:service}-${self:provider.stage}-eventbridge
+      RetentionInDays: 14

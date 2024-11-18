@@ -2,4 +2,10 @@ Resources:
   ProcessingTopic:
     Type: AWS::SNS::Topic
     Properties:
-      TopicName: json-processing-topic
+      TopicName: ${self:service}-${self:provider.stage}-topic
+
+Outputs:
+  ProcessingTopicArn:
+    Value: !Ref ProcessingTopic
+    Export:
+      Name: ${self:service}-${self:provider.stage}-TopicArn

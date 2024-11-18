@@ -45,7 +45,7 @@ functions:
           batchSize: 10
 
 resources:
-  - ${file(sls/s3.yml)}
   - ${file(sls/sns.yml)}
   - ${file(sls/sqs.yml)}
+  - ${file(sls/s3.yml)}
   - ${file(sls/eventbridge.yml)}
