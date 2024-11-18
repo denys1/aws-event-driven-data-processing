@@ -46,6 +46,6 @@ functions:
 
 resources:
   - ${file(sls/sns.yml)}
-  - ${file(sls/eventbridge.yml)}
   - ${file(sls/sqs.yml)}
+  - ${file(sls/eventbridge.yml)}
   - ${file(sls/s3.yml)}

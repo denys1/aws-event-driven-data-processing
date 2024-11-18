@@ -48,3 +48,10 @@ Resources:
                   - logs:PutMetricFilter
                   - logs:PutRetentionPolicy
                 Resource: !GetAtt SNSLogGroup.Arn
+
+Outputs:
+  TopicArn:
+    Value: !Ref ProcessingTopic
+    Export:
+      Name: event-driven-data-processing-${self:provider.stage}-TopicArn
+

@@ -2,7 +2,7 @@ Resources:
   ProcessingQueue:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: json-processing-queue
+      QueueName: ${self:service}-${self:provider.stage}-queue
       VisibilityTimeout: 300
 
   QueuePolicy:
@@ -20,11 +20,13 @@ Resources:
             Resource: !GetAtt ProcessingQueue.Arn
             Condition:
               ArnEquals:
-                aws:SourceArn: !Ref ProcessingTopic
+                aws:SourceArn: 
+                  Fn::ImportValue: event-driven-data-processing-${self:provider.stage}-TopicArn
 
   QueueSubscription:
     Type: AWS::SNS::Subscription
     Properties:
       Protocol: sqs
-      TopicArn: !Ref ProcessingTopic
+      TopicArn: 
+        Fn::ImportValue: event-driven-data-processing-${self:provider.stage}-TopicArn
       Endpoint: !GetAtt ProcessingQueue.Arn
