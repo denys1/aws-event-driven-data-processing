@@ -5,22 +5,6 @@ provider:
   runtime: python3.8
   region: ${file(config/${opt:stage, 'dev'}.yml):REGION}
   stage: ${file(config/${opt:stage, 'dev'}.yml):STAGE}
-  iam:
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - s3:GetObject
-            - s3:PutObject
-          Resource: 
-            - arn:aws:s3:::${self:custom.inputBucket}/*
-            - arn:aws:s3:::${self:custom.outputBucket}/*
-        - Effect: Allow
-          Action:
-            - sqs:ReceiveMessage
-            - sqs:DeleteMessage
-            - sqs:GetQueueAttributes
-          Resource: !GetAtt ProcessingQueue.Arn
 
 custom:
   inputBucket: ${file(config/${opt:stage, 'dev'}.yml):INPUT_BUCKET_NAME}
@@ -29,23 +13,16 @@ custom:
 package:
   patterns:
     - '!./**'
-    - 'functions/process_json/handler.py'
+    - 'functions/**'
 
-functions:
-  processJson:
-    handler: functions/process_json/handler.process
-    environment:
-      INPUT_BUCKET: ${self:custom.inputBucket}
-      OUTPUT_BUCKET: ${self:custom.outputBucket}
-      STAGE: ${file(config/${opt:stage, 'dev'}.yml):STAGE}
-      REGION: ${file(config/${opt:stage, 'dev'}.yml):REGION}
-    events:
-      - sqs:
-          arn: !GetAtt ProcessingQueue.Arn
-          batchSize: 10
+functions: ${file(sls/lambda.yml):Functions}
 
 resources:
   Resources:
+    # Lambda Resources
+    LambdaDeploymentBucket: ${file(sls/lambda.yml):Resources.LambdaDeploymentBucket}
+    LambdaExecutionRole: ${file(sls/lambda.yml):Resources.LambdaExecutionRole}
+    
     # S3 Resources
     InputBucket: ${file(sls/s3.yml):Resources.InputBucket}
     OutputBucket: ${file(sls/s3.yml):Resources.OutputBucket}
