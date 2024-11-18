@@ -20,7 +20,6 @@ functions: ${file(sls/lambda.yml):Functions}
 resources:
   Resources:
     # Lambda Resources
-    LambdaDeploymentBucket: ${file(sls/lambda.yml):Resources.LambdaDeploymentBucket}
     LambdaExecutionRole: ${file(sls/lambda.yml):Resources.LambdaExecutionRole}
     
     # S3 Resources

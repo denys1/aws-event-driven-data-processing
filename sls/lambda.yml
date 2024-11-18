@@ -1,16 +1,4 @@
 Resources:
-  LambdaDeploymentBucket:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    Properties:
-      BucketName: ${self:service}-${self:provider.stage}-deployment
-      VersioningConfiguration:
-        Status: Enabled
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: AES256
-
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
